@@ -14,10 +14,13 @@ __author__ = "woo200"
 data_dir = "/app/data"
 dir_name = "/app/gpt3bot"
 
-# Copied from thatredkite/gpt3bot
+enabled_ext = [
+    "gpt3bot.cogs.settings",
+    "gpt3bot.cogs.gptchat",
+]
 
 # this is a pretty dumb way of doing things, but it works
-intents = discord.Intents.all()
+intents = discord.Intents(messages=True)
 
 # check if the init_settings.json file exists and if not, create it
 if not Path(os.path.join(data_dir, "init_settings.json")).exists():
@@ -48,23 +51,40 @@ with open(os.path.join(data_dir, "init_settings.json"), "r") as f:
         exit(1)
 
 
-class GPT3Bot(discord.Client):
+class GPT3Bot(discord.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.openai_key = openai_key
+        self.data_dir = data_dir
+        
+        print("Connecting to redis...")
+        try:
+            self.redis = aioredis.Redis(host="redis", db=1, decode_responses=True)
+            self.redis_repost = aioredis.Redis(host="redis", db=2, decode_responses=True)
+            self.redis_welcomes = aioredis.Redis(host="redis", db=3, decode_responses=True)
+            print("Connection successful.")
+        except aioredis.ConnectionError:
+            print("Redis connection failed. Check if redis is running.")
+            exit(1)
+
     async def on_ready(self):
-        print("Ready!")
+        print("Bot Started.")
 
-    async def on_message(self, message):
-        if message.author == self.user:
-            return
-
-        if message.content.startswith("!hello"):
-            await message.channel.send("Hello!")
 
 # create the bot instance
 print(f"Starting GPT3Bot v{__version__} ...")
 bot = GPT3Bot(intents=intents)
+print(f"Loading {len(enabled_ext)} extension(s): \n")
+
+# load the cogs aka extensions
+for ext in enabled_ext:
+    try:
+        print(f"   loading {ext}")
+        bot.load_extension(ext)
+    except Exception as exc:
+        print(f"error loading {ext}")
+        raise exc
 
 try:
     bot.run(discord_token)
