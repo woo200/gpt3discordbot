@@ -46,7 +46,6 @@ with open(os.path.join(data_dir, "init_settings.json"), "r") as f:
         settings_dict = json.load(f)
         discord_token = settings_dict["discord_token"]
         openai_key = settings_dict["openai_key"]
-        command_prefix = settings_dict["prefix"]
         max_tokens = settings_dict["max_tokens"]
 
     except json.decoder.JSONDecodeError:
