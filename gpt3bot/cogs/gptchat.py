@@ -30,7 +30,7 @@ class ChatBuilder:
         for i in range(await self.redis.llen(self.key)):
             data = await self.redis.lindex(self.key, i)
             messages.append(json.loads(data))
-        return messages
+        return messages[-20:]
 
     async def __save_messages(self):
         await self.redis.delete(self.key)
@@ -38,7 +38,7 @@ class ChatBuilder:
             await self.redis.rpush(self.key, json.dumps(message))
 
     def __add_message(self, message: str, username: str):
-        self.messages.append({"message": message, "user": username})
+        self.messages.append({"message": message[-20:], "user": username})
         if len(self.messages) > 20: # Remember last 20 messages
             self.messages.pop(0)
     
@@ -56,7 +56,6 @@ AI: Im doing pretty good.
         for message in self.messages:
             GPT_Text += f"{message['user']}: {message['message']}\n"
         GPT_Text += "AI:"
-
         return GPT_Text
     
     async def generate_response(self):
@@ -67,6 +66,8 @@ AI: Im doing pretty good.
             temperature=0.2
         )
         res = response["choices"][0]["text"]
+        # res = self.generate()
+        # res = "HELLO WORLD"
         self.__add_message(res, "AI")
         await self.__save_messages()
         return res
@@ -99,21 +100,21 @@ class GptChatCog(commands.Cog, name="GPT3 Chat"):
         if "[DELAY" in response:
             delay = int(response.split("[DELAY ")[1].split("]")[0])
             response = response.replace(f"[DELAY {delay}]", "")
-        message.channel.trigger_typing()
+        await message.channel.trigger_typing()
         await asyncio.sleep(delay)
 
         if "[REPLY]" in response:
-            message.reply(content=response.replace("[REPLY]", ""))
+            await message.reply(content=response.replace("[REPLY]", ""))
         else:
-            message.channel.send(content=response)
+            await message.channel.send(content=response)
 
     @commands.check(mods_can_change_settings)
-    @bridge.bridge_command(name="enable_gpt3",
-                           description="Enable the GPT3 bot in a channel")
+    @bridge.bridge_command(name="toggle_gpt3",
+                           description="Toggle the GPT3 bot in a channel")
     async def add_gpt3_channel(self, ctx: bridge.BridgeContext, channel: discord.TextChannel):
         if not await mods_can_change_settings(ctx):
             return await ctx.respond("You don't have permission to change settings.")
-        
+
         key = f"gpt3bot_channels:{ctx.guild.id}"
         if not await self.redis.sismember(key, channel.id):
             await self.redis.sadd(key, channel.id)
