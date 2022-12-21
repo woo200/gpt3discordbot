@@ -1,7 +1,8 @@
 # GPT3 Discord Bot
 
 ## Installation
-This bot requires Docker to run, You may find instructions on installing docker for your native operating system [Here](https://docs.docker.com/get-docker/).
+This bot requires Docker to run, You may find instructions on installing docker for your native operating system [Here](https://docs.docker.com/get-docker/). <br/>
+The following instructions are for a Linux or Unix based system. 
 
 ### Clone the repository
 ```bash
