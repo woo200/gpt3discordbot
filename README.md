@@ -30,6 +30,9 @@ Populate this with your discord bots token & openai key.
 ### Running bot in background
 Once you have filled out `data/init_settings.json` you may run the bot one of two ways. To run the bot in the background of your computer, use `sudo docker-compose up -d`. To run it normally, use `sudo docker-compose up`
 
+## Windows Setup
+To set up this bot for windows, follow the the instructions to install docker [Here](https://docs.docker.com/desktop/install/windows-install/), download the repository, then follow the original installation instructions, omitting the `sudo` from any commands.
+
 ## Using the bot
 
 ### Setting a channel 
