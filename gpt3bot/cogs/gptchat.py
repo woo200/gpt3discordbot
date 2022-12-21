@@ -20,7 +20,7 @@ class ChatBuilder:
         self.messages = await self.__load_messages()
         if self.message.reference != None:
             replied_msg = await self.message.channel.fetch_message(self.message.reference.message_id)
-            self.__add_message(f"REPLYING TO [\"{replied_msg.content}\" FROM {replied_msg.author.name}]", self.message.author.name)
+            self.__add_message(f"REPLYING TO [\"{replied_msg.content}\" FROM {replied_msg.author.name}] " + self.message.content, self.message.author.name)
         else:
             self.__add_message(self.message.content, self.message.author.name)
         await self.__save_messages()
