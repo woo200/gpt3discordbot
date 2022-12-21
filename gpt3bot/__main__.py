@@ -1,7 +1,7 @@
 import os
-from abc import ABC
-from datetime import datetime
 from pathlib import Path
+from abc import ABC
+from discord.ext import bridge
 
 import discord
 import aioredis
@@ -20,7 +20,7 @@ enabled_ext = [
 ]
 
 # this is a pretty dumb way of doing things, but it works
-intents = discord.Intents(messages=True)
+intents = discord.Intents.all()
 
 # check if the init_settings.json file exists and if not, create it
 if not Path(os.path.join(data_dir, "init_settings.json")).exists():
@@ -28,6 +28,7 @@ if not Path(os.path.join(data_dir, "init_settings.json")).exists():
     settings_dict_empty = {
         "discord_token": "",
         "openai_key": "",
+        "prefix": "!"
     }
     # write the dict as json to the init_settings.json file with the json library
     with open(os.path.join(data_dir, "init_settings.json"), "w") as f:
@@ -45,15 +46,16 @@ with open(os.path.join(data_dir, "init_settings.json"), "r") as f:
         settings_dict = json.load(f)
         discord_token = settings_dict["discord_token"]
         openai_key = settings_dict["openai_key"]
+        command_prefix = settings_dict["prefix"]
 
     except json.decoder.JSONDecodeError:
         print("init_settings.json is not valid json. Please fix it.")
         exit(1)
 
 
-class GPT3Bot(discord.Bot):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class GPT3Bot(bridge.Bot, ABC):
+    def __init__(self, command_prefix, **kwargs):
+        super().__init__(command_prefix, **kwargs)
 
         self.openai_key = openai_key
         self.data_dir = data_dir
@@ -74,7 +76,7 @@ class GPT3Bot(discord.Bot):
 
 # create the bot instance
 print(f"Starting GPT3Bot v{__version__} ...")
-bot = GPT3Bot(intents=intents)
+bot = GPT3Bot(command_prefix, intents=intents, debug_guilds=[961442706398265395])
 print(f"Loading {len(enabled_ext)} extension(s): \n")
 
 # load the cogs aka extensions

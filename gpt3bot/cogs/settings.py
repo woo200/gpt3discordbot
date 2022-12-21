@@ -1,7 +1,6 @@
 import aioredis
-import discord
-
-from discord.ext import commands
+import discord  
+from discord.ext import commands, bridge
 
 def preprocessor(a):
     if type(a) is str:
@@ -48,7 +47,8 @@ class SettingsCog(commands.Cog, name="settings"):
         self.bot: discord.Client = bot
         self.redis: aioredis.Redis = self.bot.redis
 
-    @discord.command(name="add_mod", description="Add a moderator role. Mod commands will be available to this role.")
+    # @commands.command(name="add_mod", description="Add a moderator role. Mod commands will be available to this role.")
+    @bridge.bridge_command(name="add_mod", description="Add a moderator role. Mod commands will be available to this role.")
     async def _add_mod(self, ctx: commands.Context, role: discord.Role):
         """
         Allows mod perms to add a moderator role. Anyone with this role will be able to access mod features of KiteBot. 
