@@ -76,7 +76,7 @@ class GPT3Bot(bridge.Bot, ABC):
 
 # create the bot instance
 print(f"Starting GPT3Bot v{__version__} ...")
-bot = GPT3Bot(command_prefix, intents=intents, debug_guilds=[961442706398265395])
+bot = GPT3Bot(command_prefix, intents=intents)
 print(f"Loading {len(enabled_ext)} extension(s): \n")
 
 # load the cogs aka extensions
