@@ -25,10 +25,10 @@ Open `data/init_settings.json` to find something like this:
 {
     "discord_token": "",
     "openai_key": "",
-    "prefix": "!"
+    "max_tokens": 100
 }
 ```
-Populate this with your discord bots token & openai key.
+Populate this with your discord bots [token](https://discord.com/developers/applications) & [openai key](https://beta.openai.com/account/api-keys).
 
 ### Running the bot
 Once you have filled out `data/init_settings.json` you may run the bot one of two ways. To run the bot in the background of your computer, use `sudo docker-compose up -d`. To run it normally, use `sudo docker-compose up`
