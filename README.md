@@ -2,8 +2,11 @@
 
 ## Installation
 This bot requires Docker to run, You may find instructions on installing docker for your native operating system [Here](https://docs.docker.com/get-docker/). <br/>
-The following instructions are for a Linux or Unix based system. 
+The following instructions are for a Linux or Unix based system. <br />
 
+#### Note:
+When creating the bot, make sure to give it all privileged gateway intents. 
+![](https://cdn.tekcno.com/2022/12/21/HgJ2P8jGVQ)
 ### Clone the repository
 ```bash
 git clone https://github.com/woo200/gpt3discordbot
@@ -27,7 +30,7 @@ Open `data/init_settings.json` to find something like this:
 ```
 Populate this with your discord bots token & openai key.
 
-### Running bot in background
+### Running the bot
 Once you have filled out `data/init_settings.json` you may run the bot one of two ways. To run the bot in the background of your computer, use `sudo docker-compose up -d`. To run it normally, use `sudo docker-compose up`
 
 ## Windows Setup
