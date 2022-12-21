@@ -1,0 +1,17 @@
+services:
+  gpt3discordbot:
+    build: .
+    links:
+      - "redis:redis"
+    volumes:
+      - "./gpt3bot/:/app/gpt3bot"
+      - "./data/:/app/data"
+    restart: "no"
+    command: bash -c "cd /app/ && python3 -m gpt3bot"
+  
+  redis:
+    container_name: redis
+    volumes:
+      - "./data/redis:/data"
+    image: "redis:alpine"
+    entrypoint: redis-server --appendonly yes
