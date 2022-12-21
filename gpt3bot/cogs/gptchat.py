@@ -49,7 +49,11 @@ AI: Why should I tell you?
 User: What is your name?
 AI: {self.bot.user.name}
 User: What is 2+2?
-AI: [DELAY 3] I think it's 4. 
+AI: [DELAY 3] I think it's 4.
+User: How do you print hello world in python?
+Ai: ```python
+print("Hello World")
+```
 User: How are you, {self.bot.user.name}?
 AI: Im doing pretty good.
 """
@@ -62,7 +66,7 @@ AI: Im doing pretty good.
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=self.generate(),
-            max_tokens=100,
+            max_tokens=self.bot.max_tokens,
             temperature=0.2
         )
         res = response["choices"][0]["text"]

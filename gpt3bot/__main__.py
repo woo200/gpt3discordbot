@@ -28,7 +28,7 @@ if not Path(os.path.join(data_dir, "init_settings.json")).exists():
     settings_dict_empty = {
         "discord_token": "",
         "openai_key": "",
-        "prefix": "!"
+        "max_tokens": 100,
     }
     # write the dict as json to the init_settings.json file with the json library
     with open(os.path.join(data_dir, "init_settings.json"), "w") as f:
@@ -47,6 +47,7 @@ with open(os.path.join(data_dir, "init_settings.json"), "r") as f:
         discord_token = settings_dict["discord_token"]
         openai_key = settings_dict["openai_key"]
         command_prefix = settings_dict["prefix"]
+        max_tokens = settings_dict["max_tokens"]
 
     except json.decoder.JSONDecodeError:
         print("init_settings.json is not valid json. Please fix it.")
@@ -54,11 +55,12 @@ with open(os.path.join(data_dir, "init_settings.json"), "r") as f:
 
 
 class GPT3Bot(bridge.Bot, ABC):
-    def __init__(self, command_prefix, **kwargs):
-        super().__init__(command_prefix, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.openai_key = openai_key
         self.data_dir = data_dir
+        self.max_tokens = max_tokens
         
         print("Connecting to redis...")
         try:
@@ -76,7 +78,7 @@ class GPT3Bot(bridge.Bot, ABC):
 
 # create the bot instance
 print(f"Starting GPT3Bot v{__version__} ...")
-bot = GPT3Bot(command_prefix, intents=intents)
+bot = GPT3Bot(intents=intents)
 print(f"Loading {len(enabled_ext)} extension(s): \n")
 
 # load the cogs aka extensions
